@@ -75,11 +75,13 @@ readFromCSV("steps/Step_One.csv", (matrix, coordinates) => {
   }
 
   function parseMatrix() {
+    let success = true;
     orderByDistance(coordinates).forEach((point) => {
       const coordinate = point[1];
       const steps = [];
       let currentCoordinates = coordinate[0];
       const finalCoordinates = coordinate[1];
+      let iterations = 0;
 
       do {
         const oyMove = optimalOyMove(currentCoordinates, finalCoordinates);
@@ -110,8 +112,17 @@ readFromCSV("steps/Step_One.csv", (matrix, coordinates) => {
             matrix[currentCoordinates[0]][currentCoordinates[1]] = point[0];
           }
         }
-      } while (!checkIfDone(currentCoordinates, finalCoordinates) && steps.length !== 0);
+        iterations++;
+      } while (
+        !checkIfDone(currentCoordinates, finalCoordinates) &&
+        steps.length !== 0 &&
+        iterations < matrix.length * matrix[0].length
+      );
+      if (iterations >= matrix.length * matrix[0].length) {
+        success = false;
+      }
     });
+    !success && console.log("SEARCH FAILED!\n");
     printMatrix(matrix);
   }
 

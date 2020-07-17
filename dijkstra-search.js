@@ -2,6 +2,7 @@ const PriorityQueue = require("./priorityQueue");
 const { orderByDistance, printMatrix, checkPosition, availableMoves, readFromCSV } = require("./util");
 
 readFromCSV("steps/Step_One.csv", (matrix, coordinates) => {
+  let success = true;
   function djikstraAlgorithm(node, startCoordinates, endCoordinates) {
     let distances = {};
     let endCoordinatesPosition = endCoordinates.split("-").map((el) => Number.parseInt(el));
@@ -39,6 +40,9 @@ readFromCSV("steps/Step_One.csv", (matrix, coordinates) => {
         }
       });
     }
+    if (pq.isEmpty() && found === false) {
+      success = false;
+    }
     return { distances, prev };
   }
 
@@ -58,6 +62,7 @@ readFromCSV("steps/Step_One.csv", (matrix, coordinates) => {
       const { prev } = djikstraAlgorithm(point[0], point[1][0].join("-"), point[1][1].join("-"));
       reconstructPath(prev, point[0], point[1][0].join("-"), point[1][1].join("-"));
     });
+    !success && console.log("SEARCH FAILED!\n");
     printMatrix(matrix);
   }
 
